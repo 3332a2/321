@@ -1,4 +1,14 @@
+from PIL import Image
+from pathlib import Path
+import zipfile
 
+# 路径设置
+image_path = "/mnt/data/image.png"
+output_dir = Path("/mnt/data/bingmeishi_with_img")
+output_dir.mkdir(parents=True, exist_ok=True)
+
+# HTML 文件内容，嵌入本地图像路径
+html_with_image = f"""
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -7,55 +17,55 @@
   <title>冰美式 VPN - 稳定高速</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    body {
+    body {{
       margin: 0;
       font-family: 'Inter', sans-serif;
       background: #0f0f0f;
       color: #fff;
-    }
-    header {
+    }}
+    header {{
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 1.5rem 2rem;
       background-color: #101010;
-    }
-    .logo {
+    }}
+    .logo {{
       font-size: 1.5rem;
       font-weight: 700;
-    }
-    nav a {
+    }}
+    nav a {{
       color: #aaa;
       margin-left: 1.5rem;
       text-decoration: none;
       font-size: 0.95rem;
-    }
-    nav a:hover {
+    }}
+    nav a:hover {{
       color: #fff;
-    }
-    .hero {
+    }}
+    .hero {{
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
       padding: 4rem 2rem;
       background-color: #111;
-    }
-    .hero-text {
+    }}
+    .hero-text {{
       flex: 1;
       min-width: 300px;
       padding-right: 2rem;
-    }
-    .hero-text h1 {
+    }}
+    .hero-text h1 {{
       font-size: 2.5rem;
       margin-bottom: 1rem;
-    }
-    .hero-text p {
+    }}
+    .hero-text p {{
       font-size: 1rem;
       color: #ccc;
       margin-bottom: 2rem;
-    }
-    .hero-text a {
+    }}
+    .hero-text a {{
       display: inline-block;
       background: #06b6d4;
       color: #fff;
@@ -63,23 +73,24 @@
       border-radius: 0.5rem;
       font-weight: 600;
       text-decoration: none;
-    }
-    .hero-image {
+    }}
+    .hero-image {{
       flex: 1;
       min-width: 300px;
       text-align: center;
-    }
-    .hero-image img {
+    }}
+    .hero-image img {{
       max-width: 280px;
-    }
-    .plans {
+      border-radius: 1rem;
+    }}
+    .plans {{
       display: flex;
       justify-content: center;
       gap: 2rem;
       padding: 4rem 2rem;
       flex-wrap: wrap;
-    }
-    .plan {
+    }}
+    .plan {{
       background: #181818;
       padding: 2rem;
       border-radius: 1rem;
@@ -87,35 +98,35 @@
       border: 1px solid #333;
       width: 280px;
       transition: all 0.3s ease;
-    }
-    .plan:hover {
+    }}
+    .plan:hover {{
       transform: translateY(-6px);
       box-shadow: 0 6px 18px rgba(0,0,0,0.3);
-    }
-    .plan h3 {
+    }}
+    .plan h3 {{
       font-size: 1.25rem;
       margin-bottom: 0.5rem;
-    }
-    .plan p {
+    }}
+    .plan p {{
       color: #aaa;
       font-size: 0.95rem;
       margin-bottom: 1.5rem;
-    }
-    .plan a {
+    }}
+    .plan a {{
       background: #e11d48;
       color: #fff;
       padding: 0.6rem 1.2rem;
       text-decoration: none;
       border-radius: 0.4rem;
       font-weight: bold;
-    }
-    footer {
+    }}
+    footer {{
       text-align: center;
       padding: 2rem;
       color: #777;
       font-size: 0.9rem;
       background: #0f0f0f;
-    }
+    }}
   </style>
 </head>
 <body>
@@ -135,7 +146,7 @@
       <a href="#plans">立即获取</a>
     </div>
     <div class="hero-image">
-      <img src="https://cdn.jsdelivr.net/gh/chatgpt-res/image-repo/vpn-phone-demo.png" alt="VPN手机演示">
+      <img src="image.png" alt="VPN手机演示">
     </div>
   </section>
 
@@ -162,3 +173,20 @@
   </footer>
 </body>
 </html>
+"""
+
+# 写入 HTML 文件
+html_file = output_dir / "index.html"
+html_file.write_text(html_with_image, encoding="utf-8")
+
+# 拷贝图片
+image_dest = output_dir / "image.png"
+Path(image_path).replace(image_dest)
+
+# 打包为 ZIP
+zip_path = "/mnt/data/冰美式首页_含图片版.zip"
+with zipfile.ZipFile(zip_path, "w") as zipf:
+    zipf.write(html_file, arcname="index.html")
+    zipf.write(image_dest, arcname="image.png")
+
+zip_path
